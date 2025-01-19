@@ -12,6 +12,40 @@
   </header>
 
   <main>
+    <!-- Секция генерации пароля -->
+    <section class="generator-section">
+      <h2>Генерация пароля</h2>
+      <form id="generatorForm">
+        <label for="length">Длина пароля:</label>
+        <input type="number" id="length" name="length" min="4" max="128" value="12" />
+
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="useUppercase" checked />
+            Использовать заглавные (A-Z)
+          </label>
+          <label>
+            <input type="checkbox" id="useLowercase" checked />
+            Использовать строчные (a-z)
+          </label>
+          <label>
+            <input type="checkbox" id="useDigits" checked />
+            Использовать цифры (0-9)
+          </label>
+          <label>
+            <input type="checkbox" id="useSymbols" checked />
+            Использовать спец. символы (!@#$%^...)
+          </label>
+        </div>
+
+        <button type="button" id="generateBtn" class="generate-btn">Сгенерировать</button>
+
+        <label for="generatedPassword">Сгенерированный пароль:</label>
+        <input type="text" id="generatedPassword" name="generatedPassword" readonly />
+      </form>
+    </section>
+
+    <!-- Секция добавления пароля в менеджер -->
     <section class="add-password-section">
       <h2>Добавить новый пароль</h2>
       <form id="passwordForm">
@@ -24,10 +58,11 @@
         <label for="password">Пароль:</label>
         <input type="password" id="password" name="password" required />
 
-        <button type="submit">Сохранить</button>
+        <button type="submit" class="save-btn">Сохранить</button>
       </form>
     </section>
 
+    <!-- Секция списка сохраненных паролей -->
     <section class="password-list-section">
       <h2>Сохранённые пароли</h2>
       <table id="passwordTable">
@@ -40,7 +75,7 @@
           </tr>
         </thead>
         <tbody id="passwordTableBody">
-          <!-- Здесь будет динамически формироваться список паролей -->
+          <!-- Список паролей формируется динамически через JS -->
         </tbody>
       </table>
     </section>
