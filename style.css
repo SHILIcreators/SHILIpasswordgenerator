@@ -1,3 +1,4 @@
+/* Сброс базовых стилей и общие настройки */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -25,6 +26,8 @@ main {
   margin: 0 auto;
 }
 
+/* Стили секций */
+.generator-section,
 .add-password-section,
 .password-list-section {
   background: #fff;
@@ -33,11 +36,13 @@ main {
   margin-bottom: 20px;
 }
 
+.generator-section h2,
 .add-password-section h2,
 .password-list-section h2 {
   margin-bottom: 15px;
 }
 
+/* Формы */
 form {
   display: flex;
   flex-direction: column;
@@ -47,12 +52,22 @@ form label {
   margin: 10px 0 5px;
 }
 
-form input {
+form input[type="text"],
+form input[type="password"],
+form input[type="number"] {
   padding: 10px;
   font-size: 16px;
 }
 
-form button {
+.checkbox-group {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Кнопки */
+.generate-btn,
+.save-btn {
   margin-top: 15px;
   padding: 10px;
   background: #007BFF;
@@ -63,30 +78,36 @@ form button {
   border-radius: 5px;
 }
 
-form button:hover {
+.generate-btn:hover,
+.save-btn:hover {
   background: #0056b3;
 }
 
-table {
+/* Таблица паролей */
+.password-list-section table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
 }
 
-table, th, td {
+.password-list-section table,
+.password-list-section th,
+.password-list-section td {
   border: 1px solid #ddd;
 }
 
-th, td {
+.password-list-section th,
+.password-list-section td {
   padding: 10px;
   text-align: left;
 }
 
-th {
+.password-list-section th {
   background: #007BFF;
   color: #fff;
 }
 
+/* Кнопки "Показать" и "Удалить" в таблице */
 .view-btn,
 .delete-btn {
   background: #007BFF;
@@ -111,7 +132,9 @@ th {
   background: #a71d2a;
 }
 
+/* Нижний колонтитул */
 footer p {
   font-size: 14px;
   color: #777;
+  margin-top: 20px;
 }
