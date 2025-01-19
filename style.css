@@ -1,0 +1,117 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+body {
+  background: #f4f4f4;
+  color: #333;
+  padding: 20px;
+}
+
+header, footer {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+main {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.add-password-section,
+.password-list-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.add-password-section h2,
+.password-list-section h2 {
+  margin-bottom: 15px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  margin: 10px 0 5px;
+}
+
+form input {
+  padding: 10px;
+  font-size: 16px;
+}
+
+form button {
+  margin-top: 15px;
+  padding: 10px;
+  background: #007BFF;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+form button:hover {
+  background: #0056b3;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #007BFF;
+  color: #fff;
+}
+
+.view-btn,
+.delete-btn {
+  background: #007BFF;
+  color: #fff;
+  padding: 5px 10px;
+  margin-right: 5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.view-btn:hover {
+  background: #0056b3;
+}
+
+.delete-btn {
+  background: #dc3545;
+}
+
+.delete-btn:hover {
+  background: #a71d2a;
+}
+
+footer p {
+  font-size: 14px;
+  color: #777;
+}

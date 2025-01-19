@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Безопасный менеджер паролей</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Безопасный менеджер паролей</h1>
+  </header>
+
+  <main>
+    <section class="add-password-section">
+      <h2>Добавить новый пароль</h2>
+      <form id="passwordForm">
+        <label for="website">Сайт:</label>
+        <input type="text" id="website" name="website" required />
+
+        <label for="username">Имя пользователя:</label>
+        <input type="text" id="username" name="username" required />
+
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required />
+
+        <button type="submit">Сохранить</button>
+      </form>
+    </section>
+
+    <section class="password-list-section">
+      <h2>Сохранённые пароли</h2>
+      <table id="passwordTable">
+        <thead>
+          <tr>
+            <th>Сайт</th>
+            <th>Имя пользователя</th>
+            <th>Пароль</th>
+            <th>Действие</th>
+          </tr>
+        </thead>
+        <tbody id="passwordTableBody">
+          <!-- Здесь будет динамически формироваться список паролей -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>Разработано для демонстрации безопасного хранения паролей на стороне клиента.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
