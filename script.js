@@ -1,4 +1,3 @@
-
 const DB_NAME = 'SecurePasswordManagerDB';
 const DB_VERSION = 1;
 const KEY_STORE_NAME = 'encryptionKeyStore';
@@ -159,11 +158,13 @@ function handleGeneratePassword() {
   const useDigitsInput = document.getElementById('useDigits');
   const useSymbolsInput = document.getElementById('useSymbols');
   const generatedPasswordInput = document.getElementById('generatedPassword');
+  const passwordInput = document.getElementById('password');
   const length = parseInt(lengthInput.value, 10);
   if (length > 65000) { alert('Максимальная длина пароля - 65000 символов'); return; }
   try {
     const generatedPass = generateSecurePassword({ length, useUppercase: useUppercaseInput.checked, useLowercase: useLowercaseInput.checked, useDigits: useDigitsInput.checked, useSymbols: useSymbolsInput.checked });
     generatedPasswordInput.value = generatedPass;
+    passwordInput.value = generatedPass;
   } catch (error) {
     alert(error.message);
   }
@@ -177,6 +178,7 @@ async function handleAddPasswordSubmit(event) {
   const username = usernameInput.value.trim();
   const plainPassword = passwordInput.value;
   if (!website || !username || !plainPassword) { alert('Пожалуйста, заполните все поля (сайт, имя пользователя, пароль).'); return; }
+  if (website.length > 200 || username.length > 200) { alert('Название сайта и имя пользователя не должны превышать 200 символов.'); return; }
   if (plainPassword.length > 65000) { alert('Пароль не должен превышать 65000 символов.'); return; }
   try {
     const encrypted = await encryptPassword(plainPassword);
@@ -203,6 +205,13 @@ async function initApp() {
     generateBtn.addEventListener('click', handleGeneratePassword);
     const passwordForm = document.getElementById('passwordForm');
     passwordForm.addEventListener('submit', handleAddPasswordSubmit);
+    const copyBtn = document.getElementById('copyPasswordBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const generatedPasswordInput = document.getElementById('generatedPassword');
+        navigator.clipboard.writeText(generatedPasswordInput.value).then(() => { alert('Пароль скопирован'); }).catch(() => { alert('Ошибка копирования'); });
+      });
+    }
   } catch (error) {
     console.error('Ошибка инициализации приложения:', error);
     alert('Ошибка инициализации. Проверьте консоль разработчика.');
