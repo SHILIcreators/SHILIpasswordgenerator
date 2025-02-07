@@ -91,7 +91,7 @@ async function decryptPassword(encryptedData) {
 }
 function generateSecurePassword(options) {
   const { length, useUppercase, useLowercase, useDigits, useSymbols } = options;
-  if (length > 65000) { throw new Error('Максимальная длина пароля - 65000 символов'); }
+  if (length > 128) { throw new Error('Максимальная длина пароля - 128 символов'); }
   const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
   const digitChars = '0123456789';
@@ -160,7 +160,7 @@ function handleGeneratePassword() {
   const generatedPasswordInput = document.getElementById('generatedPassword');
   const passwordInput = document.getElementById('password');
   const length = parseInt(lengthInput.value, 10);
-  if (length > 65000) { alert('Максимальная длина пароля - 65000 символов'); return; }
+  if (length > 128) { alert('Максимальная длина пароля - 128 символов'); return; }
   try {
     const generatedPass = generateSecurePassword({ length, useUppercase: useUppercaseInput.checked, useLowercase: useLowercaseInput.checked, useDigits: useDigitsInput.checked, useSymbols: useSymbolsInput.checked });
     generatedPasswordInput.value = generatedPass;
@@ -178,8 +178,8 @@ async function handleAddPasswordSubmit(event) {
   const username = usernameInput.value.trim();
   const plainPassword = passwordInput.value;
   if (!website || !username || !plainPassword) { alert('Пожалуйста, заполните все поля (сайт, имя пользователя, пароль).'); return; }
-  if (website.length > 200 || username.length > 200) { alert('Название сайта и имя пользователя не должны превышать 200 символов.'); return; }
-  if (plainPassword.length > 65000) { alert('Пароль не должен превышать 65000 символов.'); return; }
+  if (website.length > 70 || username.length > 70) { alert('Название сайта и имя пользователя не должны превышать 200 символов.'); return; }
+  if (plainPassword.length > 128) { alert('Пароль не должен превышать 128 символов.'); return; }
   try {
     const encrypted = await encryptPassword(plainPassword);
     await saveEncryptedPasswordToDB({ website, username, iv: encrypted.iv, ciphertext: encrypted.ciphertext });
