@@ -3,6 +3,7 @@ const DB_VERSION = 1;
 const KEY_STORE_NAME = 'encryptionKeyStore';
 const PASSWORD_STORE_NAME = 'passwords';
 let rawMasterKey = null;
+
 function openDatabase() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -19,6 +20,7 @@ function openDatabase() {
     request.onerror = () => { reject(request.error); };
   });
 }
+
 async function getMasterKeyFromDB() {
   const db = await openDatabase();
   return new Promise((resolve, reject) => {
@@ -29,6 +31,7 @@ async function getMasterKeyFromDB() {
     getRequest.onerror = () => { reject(getRequest.error); };
   });
 }
+
 async function saveMasterKeyToDB(rawKey) {
   const db = await openDatabase();
   return new Promise((resolve, reject) => {
@@ -39,6 +42,7 @@ async function saveMasterKeyToDB(rawKey) {
     putRequest.onerror = () => { reject(putRequest.error); };
   });
 }
+
 async function saveEncryptedPasswordToDB({ website, username, iv, ciphertext }) {
   const db = await openDatabase();
   return new Promise((resolve, reject) => {
@@ -49,6 +53,7 @@ async function saveEncryptedPasswordToDB({ website, username, iv, ciphertext }) 
     request.onerror = () => { reject(request.error); };
   });
 }
+
 async function getAllPasswords() {
   const db = await openDatabase();
   return new Promise((resolve, reject) => {
@@ -59,6 +64,7 @@ async function getAllPasswords() {
     request.onerror = () => { reject(request.error); };
   });
 }
+
 async function deletePasswordById(id) {
   const db = await openDatabase();
   return new Promise((resolve, reject) => {
@@ -69,19 +75,23 @@ async function deletePasswordById(id) {
     request.onerror = () => { reject(request.error); };
   });
 }
+
 async function generateMasterKey() {
   const key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
   return crypto.subtle.exportKey('raw', key);
 }
+
 async function importKey(rawKey) {
   return crypto.subtle.importKey('raw', rawKey, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
 }
+
 async function encryptPassword(plainTextPassword) {
   const key = await importKey(rawMasterKey);
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encryptedBuffer = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(plainTextPassword));
   return { iv: Array.from(iv), ciphertext: Array.from(new Uint8Array(encryptedBuffer)) };
 }
+
 async function decryptPassword(encryptedData) {
   const key = await importKey(rawMasterKey);
   const iv = new Uint8Array(encryptedData.iv);
@@ -89,6 +99,7 @@ async function decryptPassword(encryptedData) {
   const decryptedBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
   return new TextDecoder().decode(decryptedBuffer);
 }
+
 function generateSecurePassword(options) {
   const { length, useUppercase, useLowercase, useDigits, useSymbols } = options;
   if (length > 128) { throw new Error('Максимальная длина пароля - 128 символов'); }
@@ -111,18 +122,32 @@ function generateSecurePassword(options) {
   }
   return result;
 }
+
 async function refreshPasswordList() {
   const passwordTableBody = document.getElementById('passwordTableBody');
   passwordTableBody.innerHTML = '';
   const passwords = await getAllPasswords();
   for (const entry of passwords) {
     const row = document.createElement('tr');
+
     const websiteCell = document.createElement('td');
-    websiteCell.textContent = entry.website;
+    const websiteSpan = document.createElement('span');
+    websiteSpan.textContent = entry.website;
+    websiteSpan.classList.add('truncated');
+    websiteSpan.title = entry.website;
+    websiteSpan.addEventListener('click', () => { alert(entry.website); });
+    websiteCell.appendChild(websiteSpan);
     row.appendChild(websiteCell);
+
     const usernameCell = document.createElement('td');
-    usernameCell.textContent = entry.username;
+    const usernameSpan = document.createElement('span');
+    usernameSpan.textContent = entry.username;
+    usernameSpan.classList.add('truncated');
+    usernameSpan.title = entry.username;
+    usernameSpan.addEventListener('click', () => { alert(entry.username); });
+    usernameCell.appendChild(usernameSpan);
     row.appendChild(usernameCell);
+
     const passwordCell = document.createElement('td');
     const viewButton = document.createElement('button');
     viewButton.textContent = 'Показать';
@@ -137,7 +162,23 @@ async function refreshPasswordList() {
       }
     });
     passwordCell.appendChild(viewButton);
+
+    const copyBtn = document.createElement('button');
+    copyBtn.textContent = 'Копировать';
+    copyBtn.classList.add('copy-btn');
+    copyBtn.addEventListener('click', async () => {
+      try {
+        const decrypted = await decryptPassword({ iv: entry.iv, ciphertext: entry.ciphertext });
+        await navigator.clipboard.writeText(decrypted);
+        alert('Пароль скопирован');
+      } catch (err) {
+        console.error('Ошибка при копировании пароля:', err);
+        alert('Ошибка копирования');
+      }
+    });
+    passwordCell.appendChild(copyBtn);
     row.appendChild(passwordCell);
+
     const actionCell = document.createElement('td');
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Удалить';
@@ -148,9 +189,11 @@ async function refreshPasswordList() {
     });
     actionCell.appendChild(deleteButton);
     row.appendChild(actionCell);
+
     passwordTableBody.appendChild(row);
   }
 }
+
 function handleGeneratePassword() {
   const lengthInput = document.getElementById('length');
   const useUppercaseInput = document.getElementById('useUppercase');
@@ -162,13 +205,20 @@ function handleGeneratePassword() {
   const length = parseInt(lengthInput.value, 10);
   if (length > 128) { alert('Максимальная длина пароля - 128 символов'); return; }
   try {
-    const generatedPass = generateSecurePassword({ length, useUppercase: useUppercaseInput.checked, useLowercase: useLowercaseInput.checked, useDigits: useDigitsInput.checked, useSymbols: useSymbolsInput.checked });
+    const generatedPass = generateSecurePassword({
+      length,
+      useUppercase: useUppercaseInput.checked,
+      useLowercase: useLowercaseInput.checked,
+      useDigits: useDigitsInput.checked,
+      useSymbols: useSymbolsInput.checked
+    });
     generatedPasswordInput.value = generatedPass;
     passwordInput.value = generatedPass;
   } catch (error) {
     alert(error.message);
   }
 }
+
 async function handleAddPasswordSubmit(event) {
   event.preventDefault();
   const websiteInput = document.getElementById('website');
@@ -177,9 +227,18 @@ async function handleAddPasswordSubmit(event) {
   const website = websiteInput.value.trim();
   const username = usernameInput.value.trim();
   const plainPassword = passwordInput.value;
-  if (!website || !username || !plainPassword) { alert('Пожалуйста, заполните все поля (сайт, имя пользователя, пароль).'); return; }
-  if (website.length > 70 || username.length > 70) { alert('Название сайта и имя пользователя не должны превышать 200 символов.'); return; }
-  if (plainPassword.length > 128) { alert('Пароль не должен превышать 128 символов.'); return; }
+  if (!website || !username || !plainPassword) {
+    alert('Пожалуйста, заполните все поля (сайт, имя пользователя, пароль).');
+    return;
+  }
+  if (website.length > 200 || username.length > 200) {
+    alert('Название сайта и имя пользователя не должны превышать 200 символов.');
+    return;
+  }
+  if (plainPassword.length > 128) {
+    alert('Пароль не должен превышать 128 символов.');
+    return;
+  }
   try {
     const encrypted = await encryptPassword(plainPassword);
     await saveEncryptedPasswordToDB({ website, username, iv: encrypted.iv, ciphertext: encrypted.ciphertext });
@@ -192,6 +251,7 @@ async function handleAddPasswordSubmit(event) {
     alert('Не удалось сохранить пароль.');
   }
 }
+
 async function initApp() {
   try {
     let storedKey = await getMasterKeyFromDB();
@@ -209,7 +269,9 @@ async function initApp() {
     if (copyBtn) {
       copyBtn.addEventListener('click', () => {
         const generatedPasswordInput = document.getElementById('generatedPassword');
-        navigator.clipboard.writeText(generatedPasswordInput.value).then(() => { alert('Пароль скопирован'); }).catch(() => { alert('Ошибка копирования'); });
+        navigator.clipboard.writeText(generatedPasswordInput.value)
+          .then(() => { alert('Пароль скопирован'); })
+          .catch(() => { alert('Ошибка копирования'); });
       });
     }
   } catch (error) {
