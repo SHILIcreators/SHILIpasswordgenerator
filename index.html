@@ -10,15 +10,12 @@
   <header>
     <h1>Безопасный менеджер паролей</h1>
   </header>
-
   <main>
-   
     <section class="generator-section">
       <h2>Генерация пароля</h2>
       <form id="generatorForm">
         <label for="length">Длина пароля:</label>
         <input type="number" id="length" name="length" min="4" max="128" value="12" />
-
         <div class="checkbox-group">
           <label>
             <input type="checkbox" id="useUppercase" checked />
@@ -37,32 +34,26 @@
             Использовать спец. символы (!@#$%^...)
           </label>
         </div>
-
         <button type="button" id="generateBtn" class="generate-btn">Сгенерировать</button>
-
         <label for="generatedPassword">Сгенерированный пароль:</label>
-        <input type="text" id="generatedPassword" name="generatedPassword" readonly />
+        <div class="generated-password-container">
+          <input type="text" id="generatedPassword" name="generatedPassword" readonly />
+          <button type="button" id="copyPasswordBtn" class="copy-btn">Копировать</button>
+        </div>
       </form>
     </section>
-
-    
     <section class="add-password-section">
       <h2>Добавить новый пароль</h2>
       <form id="passwordForm">
         <label for="website">Сайт:</label>
         <input type="text" id="website" name="website" required />
-
         <label for="username">Имя пользователя:</label>
         <input type="text" id="username" name="username" required />
-
         <label for="password">Пароль:</label>
         <input type="password" id="password" name="password" required />
-
         <button type="submit" class="save-btn">Сохранить</button>
       </form>
     </section>
-
-    
     <section class="password-list-section">
       <h2>Сохранённые пароли</h2>
       <table id="passwordTable">
@@ -74,17 +65,13 @@
             <th>Действие</th>
           </tr>
         </thead>
-        <tbody id="passwordTableBody">
-         
-        </tbody>
+        <tbody id="passwordTableBody"></tbody>
       </table>
     </section>
   </main>
-
   <footer>
     <p></p>
   </footer>
-
   <script src="script.js"></script>
 </body>
 </html>
